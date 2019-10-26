@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Loot prio</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://gridstackjs.com/dist/gridstack.css"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.0/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/shim.min.js"></script>
+    <script src="https://gridstackjs.com/dist/gridstack.js"></script>
+    <script src="https://gridstackjs.com/dist/gridstack.jQueryUI.js"></script>
+
+
+    <script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>
+    <script src="https://wow.zamimg.com/widgets/power.js"></script>
+
+    <style type="text/css">
+        .grid-stack {
+            background: lightgoldenrodyellow;
+        }
+        .grid-stack-item-content {
+            color: #2c3e50;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 5px;
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+        .grid-stack .grid-stack-placeholder > .placeholder-content {
+            border: 1px dashed black;
+            margin: 0;
+            position: absolute;
+            top: 0;
+            left: 10px;
+            right: 10px;
+            bottom: 0;
+            width: auto;
+            z-index: 0 !important;
+            text-align: center;
+        }
+
+        .grid-stack-item[data-gs-width="3"]  { width: 100% }
+        .grid-stack-item[data-gs-width="2"]  { width: 66.66666667% }
+        .grid-stack-item[data-gs-width="1"]  { width: 33.33333333% }
+
+        .grid-stack-item[data-gs-x="2"]  { left: 66.66666667% }
+        .grid-stack-item[data-gs-x="1"]  { left: 33.33333333% }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <h1>Loot prio</h1>
+
+        <div>
+            <a class="btn btn-default" id="save-grid" href="#">Save Grid</a>
+            <a class="btn btn-default" id="load-grid" href="#">Load Grid</a>
+            <a class="btn btn-default" id="clear-grid" href="#">Clear Grid</a>
+        </div>
+
+        <br/>
+
+        <div class="grid-stack">
+        </div>
+
+        <hr/>
+
+        <textarea id="saved-data" cols="100" rows="20"></textarea>
+    </div>
+
+    
+    <script type="text/javascript">
+        $(function () {
+            const itemLinks =  ["https://classic.wowhead.com/item=12717/plans-lionheart-helm","https://classic.wowhead.com/item=18646/the-eye-of-divinity","https://classic.wowhead.com/item=17076/bonereavers-edge","https://classic.wowhead.com/item=17103/azuresong-mageblade","https://classic.wowhead.com/item=14554/cloudkeeper-legplates","https://classic.wowhead.com/item=18816/perditions-blade","https://classic.wowhead.com/item=1168/skullflame-shield","https://classic.wowhead.com/item=1728/teebus-blazing-longsword","https://classic.wowhead.com/item=18822/obsidian-edged-blade","https://classic.wowhead.com/item=18842/staff-of-dominance","https://classic.wowhead.com/item=14555/alcors-sunrazor","https://classic.wowhead.com/item=18805/core-hound-tooth","https://classic.wowhead.com/item=18832/brutality-blade","https://classic.wowhead.com/item=18703/ancient-petrified-leaf","https://classic.wowhead.com/item=17105/aurastone-hammer","https://classic.wowhead.com/item=19145/robe-of-volatile-power","https://classic.wowhead.com/item=18821/quick-strike-ring","https://classic.wowhead.com/item=18814/choker-of-the-fire-lord","https://classic.wowhead.com/item=17104/spinal-reaper","https://classic.wowhead.com/item=18820/talisman-of-ephemeral-power","https://classic.wowhead.com/item=19140/cauterizing-band","https://classic.wowhead.com/item=17063/band-of-accuria","https://classic.wowhead.com/item=19136/mana-igniting-cord","https://classic.wowhead.com/item=14553/sash-of-mercy","https://classic.wowhead.com/item=944/elemental-mage-staff","https://classic.wowhead.com/item=17069/strikers-mark","https://classic.wowhead.com/item=19147/ring-of-spell-power","https://classic.wowhead.com/item=2243/hand-of-edward-the-odd","https://classic.wowhead.com/item=18203/eskhandars-right-claw","https://classic.wowhead.com/item=19146/wristguards-of-stability","https://classic.wowhead.com/item=17203/sulfuron-ingot","https://classic.wowhead.com/item=19143/flameguard-gauntlets","https://classic.wowhead.com/item=17073/earthshaker","https://classic.wowhead.com/item=17071/gutgore-ripper","https://classic.wowhead.com/item=19142/fire-runed-grimoire","https://classic.wowhead.com/item=17066/drillborer-disk","https://classic.wowhead.com/item=1263/brain-hacker","https://classic.wowhead.com/item=19137/onslaught-girdle","https://classic.wowhead.com/item=18810/wild-growth-spaulders","https://classic.wowhead.com/item=14511/pattern-gloves-of-spell-mastery","https://classic.wowhead.com/item=18823/aged-core-leather-gloves","https://classic.wowhead.com/item=17106/malistars-defender","https://classic.wowhead.com/item=17072/blastershot-launcher","https://classic.wowhead.com/item=18875/salamander-scale-pants","https://classic.wowhead.com/item=18817/crown-of-destruction","https://classic.wowhead.com/item=18878/sorcerous-dagger","https://classic.wowhead.com/item=18809/sash-of-whispered-secrets","https://classic.wowhead.com/item=17102/cloak-of-the-shrouded-mists","https://classic.wowhead.com/item=16795/arcanist-crown","https://classic.wowhead.com/item=2801/blade-of-hanna", "https://classic.wowhead.com/item=18879/heavy-dark-iron-ring","https://classic.wowhead.com/item=16915/netherwind-pants","https://classic.wowhead.com/item=17109/choker-of-enlightenment","https://classic.wowhead.com/item=17074/shadowstrike","https://classic.wowhead.com/item=18803/finkles-lava-dredger","https://classic.wowhead.com/item=16799/arcanist-bindings","https://classic.wowhead.com/item=17107/dragons-blood-cape","https://classic.wowhead.com/item=17065/medallion-of-steadfast-might","https://classic.wowhead.com/item=16808/felheart-horns","https://classic.wowhead.com/item=18812/wristguards-of-true-flight","https://classic.wowhead.com/item=18815/essence-of-the-pure-flame","https://classic.wowhead.com/item=16816/mantle-of-prophecy","https://classic.wowhead.com/item=16862/sabatons-of-might","https://classic.wowhead.com/item=19139/fireguard-shoulders","https://classic.wowhead.com/item=16868/pauldrons-of-might","https://classic.wowhead.com/item=16819/vambraces-of-prophecy","https://classic.wowhead.com/item=2245/helm-of-narv","https://classic.wowhead.com/item=16820/nightslayer-chestpiece","https://classic.wowhead.com/item=16909/bloodfang-pants","https://classic.wowhead.com/item=16823/nightslayer-shoulder-pads","https://classic.wowhead.com/item=12720/plans-stronghold-gauntlets","https://classic.wowhead.com/item=16827/nightslayer-belt","https://classic.wowhead.com/item=17082/shard-of-the-flame","https://classic.wowhead.com/item=17110/seal-of-the-archmagus","https://classic.wowhead.com/item=16817/girdle-of-prophecy","https://classic.wowhead.com/item=1443/jeweled-amulet-of-cainwyn","https://classic.wowhead.com/item=16922/leggings-of-transcendence","https://classic.wowhead.com/item=16812/gloves-of-prophecy","https://classic.wowhead.com/item=16866/helm-of-might","https://classic.wowhead.com/item=16863/gauntlets-of-might","https://classic.wowhead.com/item=16828/cenarion-belt","https://classic.wowhead.com/item=16864/belt-of-might","https://classic.wowhead.com/item=16800/arcanist-boots","https://classic.wowhead.com/item=19138/band-of-sulfuras","https://classic.wowhead.com/item=16847/giantstalkers-leggings","https://classic.wowhead.com/item=16801/arcanist-gloves","https://classic.wowhead.com/item=16930/nemesis-leggings","https://classic.wowhead.com/item=16797/arcanist-mantle","https://classic.wowhead.com/item=16851/giantstalkers-belt","https://classic.wowhead.com/item=16962/legplates-of-wrath","https://classic.wowhead.com/item=16861/bracers-of-might","https://classic.wowhead.com/item=16809/felheart-robes","https://classic.wowhead.com/item=16805/felheart-gloves","https://classic.wowhead.com/item=16804/felheart-bracers","https://classic.wowhead.com/item=17077/crimson-shocker","https://classic.wowhead.com/item=16833/cenarion-vestments","https://classic.wowhead.com/item=16865/breastplate-of-might","https://classic.wowhead.com/item=16815/robes-of-prophecy","https://classic.wowhead.com/item=16848/giantstalkers-epaulets","https://classic.wowhead.com/item=18861/flamewaker-legplates", "https://classic.wowhead.com/item=16842/earthfury-helmet","https://classic.wowhead.com/item=18829/deep-earth-spaulders","https://classic.wowhead.com/item=16796/arcanist-leggings","https://classic.wowhead.com/item=16802/arcanist-belt","https://classic.wowhead.com/item=16821/nightslayer-cover","https://classic.wowhead.com/item=16825/nightslayer-bracelets","https://classic.wowhead.com/item=16811/boots-of-prophecy","https://classic.wowhead.com/item=16806/felheart-belt","https://classic.wowhead.com/item=16846/giantstalkers-helmet","https://classic.wowhead.com/item=16798/arcanist-robes","https://classic.wowhead.com/item=18872/manastorm-leggings","https://classic.wowhead.com/item=16831/cenarion-gloves","https://classic.wowhead.com/item=16807/felheart-shoulder-pads","https://classic.wowhead.com/item=3475/cloak-of-flames","https://classic.wowhead.com/item=16813/circlet-of-prophecy","https://classic.wowhead.com/item=16826/nightslayer-gloves","https://classic.wowhead.com/item=16836/cenarion-spaulders","https://classic.wowhead.com/item=18811/fireproof-cloak","https://classic.wowhead.com/item=16824/nightslayer-boots","https://classic.wowhead.com/item=18806/core-forged-greaves","https://classic.wowhead.com/item=16834/cenarion-helm","https://classic.wowhead.com/item=16850/giantstalkers-bracers","https://classic.wowhead.com/item=16845/giantstalkers-breastplate","https://classic.wowhead.com/item=16829/cenarion-boots","https://classic.wowhead.com/item=18870/helm-of-the-lifegiver","https://classic.wowhead.com/item=18808/gloves-of-the-hypnotic-flame","https://classic.wowhead.com/item=16867/legplates-of-might","https://classic.wowhead.com/item=16901/stormrage-legguards","https://classic.wowhead.com/item=16810/felheart-pants","https://classic.wowhead.com/item=16954/judgement-legplates","https://classic.wowhead.com/item=16938/dragonstalkers-legguards","https://classic.wowhead.com/item=16803/felheart-slippers","https://classic.wowhead.com/item=16822/nightslayer-pants","https://classic.wowhead.com/item=16852/giantstalkers-gloves","https://classic.wowhead.com/item=16844/earthfury-epaulets","https://classic.wowhead.com/item=16830/cenarion-bracers","https://classic.wowhead.com/item=16849/giantstalkers-boots","https://classic.wowhead.com/item=16946/legplates-of-ten-storms","https://classic.wowhead.com/item=16838/earthfury-belt","https://classic.wowhead.com/item=16814/pants-of-prophecy","https://classic.wowhead.com/item=16841/earthfury-vestments","https://classic.wowhead.com/item=16856/lawbringer-spaulders","https://classic.wowhead.com/item=19144/sabatons-of-the-flamewalker","https://classic.wowhead.com/item=16839/earthfury-gauntlets","https://classic.wowhead.com/item=18824/magma-tempered-boots","https://classic.wowhead.com/item=16843/earthfury-legguards","https://classic.wowhead.com/item=16858/lawbringer-belt","https://classic.wowhead.com/item=16853/lawbringer-chestguard","https://classic.wowhead.com/item=16854/lawbringer-helm","https://classic.wowhead.com/item=16840/earthfury-bracers", "https://classic.wowhead.com/item=12728/plans-invulnerable-mail","https://classic.wowhead.com/item=16835/cenarion-leggings","https://classic.wowhead.com/item=16859/lawbringer-boots","https://classic.wowhead.com/item=16857/lawbringer-bracers","https://classic.wowhead.com/item=16837/earthfury-boots","https://classic.wowhead.com/item=16855/lawbringer-legplates","https://classic.wowhead.com/item=16860/lawbringer-gauntlets"]
+            var options = {
+                alwaysShowResizeHandle: false
+            };
+            $('.grid-stack').gridstack(options);
+            new function () {
+                this.serializedData = itemLinks.map((link, idx) => {
+                    return {
+                        id: link, x: 0, y: idx + 1, height: 1, width: 1
+                    }
+                })
+                this.grid = $('.grid-stack').data('gridstack');
+
+                this.loadGrid = function () {
+                    this.grid.removeAll();
+                    let headers = []
+                    
+                    headers.push(this.grid.addWidget($(`<div data-gs-id="header1"><div class="grid-stack-item-content"><b>Unsorted</b></div></div>`),
+                        0, 0, 1, 1))
+                    headers.push(this.grid.addWidget($(`<div data-gs-id="header2"><div class="grid-stack-item-content"><b>Tank Prio</b></div></div>`),
+                        1, 0, 1, 1))
+                    headers.push(this.grid.addWidget($(`<div data-gs-id="header3"><div class="grid-stack-item-content"><b>Fury Prio</b></div></div>`),
+                        2, 0, 1, 1))
+                    headers.push(this.grid.addWidget($(`<div data-gs-id="header5"><div class="grid-stack-item-content"><b>All warrior prio</b></div></div>`),
+                        3, 0, 1, 1))
+                    headers.push(this.grid.addWidget($(`<div data-gs-id="header6"><div class="grid-stack-item-content"><b>Other Class Prio</b></div></div>`),
+                        4, 0, 1, 1))
+
+                    headers.forEach((header) => {
+                        this.grid.resizable(header, false)
+                        this.grid.movable(header, false)
+                        this.grid.locked(header, true)
+                        
+                    })
+                    // const textData = $('#saved-data')[0].value
+                    const textData = localStorage.getItem('lootprio')
+                    if (textData) {
+                        this.serializedData = JSON.parse(textData)
+                        // requestAnimationFrame(() => $WowheadPower.refreshLinks())
+                    }
+
+                    const items = GridStackUI.Utils.sort(this.serializedData);
+                    items.forEach(function (node) {
+                        const gridnode = this.grid.addWidget($(`<div data-gs-id="${node.id}"><div class="grid-stack-item-content"><a href="${node.id}"></a></div></div>`),
+                            node.x, node.y, node.width, node.height);
+
+                        this.grid.resizable(gridnode, false)
+                    }, this);
+                
+                    return false;
+                }.bind(this);
+                this.saveGrid = function () {
+                    this.serializedData = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
+                        el = $(el);
+                        var node = el.data('_gridstack_node');
+                        if (/header/.test(node.id)) return
+
+                        return {
+                            id: node.id,
+                            x: node.x,
+                            y: node.y,
+                            width: node.width,
+                            height: node.height
+                        };
+                    }).toArray().filter(Boolean);
+                    $('#saved-data').val(JSON.stringify(this.serializedData, null, '    '));
+                    localStorage.setItem('lootprio', JSON.stringify(this.serializedData))
+                    return false;
+                }.bind(this);
+                this.clearGrid = function () {
+                    this.grid.removeAll();
+                    return false;
+                }.bind(this);
+                $('#save-grid').click(this.saveGrid);
+                $('#load-grid').click(this.loadGrid);
+                $('#clear-grid').click(this.clearGrid);
+                this.loadGrid();
+            };
+        });
+
+
+    </script>
+</body>
+</html>
