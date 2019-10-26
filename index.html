@@ -127,7 +127,7 @@
                         
                         const items = GridStackUI.Utils.sort(this.serializedData);
                         items.forEach(function (node) {
-                            const gridnode = this.grid.addWidget($(`<div data-gs-id="${node.id}"><div class="grid-stack-item-content"><a href="${node.id}"></a></div></div>`),
+                            const gridnode = this.grid.addWidget($(`<div data-gs-id="${node.id}"><div class="grid-stack-item-content"><a target="_blank" href="${node.id}"></a></div></div>`),
                                 node.x, node.y, node.width, node.height);
 
                             this.grid.resizable(gridnode, false)
