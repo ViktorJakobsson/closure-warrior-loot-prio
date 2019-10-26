@@ -117,20 +117,25 @@
                         
                     })
                     // const textData = $('#saved-data')[0].value
-                    const textData = localStorage.getItem('lootprio')
-                    if (textData) {
-                        this.serializedData = JSON.parse(textData)
-                        // requestAnimationFrame(() => $WowheadPower.refreshLinks())
-                    }
+                    // const textData = localStorage.getItem('lootprio')
+                    fetch('./data.json').then((res) => res.json()).then((val) => {
+                        // if (val) {
+                        //     this.serializedData = JSON.parse(textData)
+                        //     // requestAnimationFrame(() => $WowheadPower.refreshLinks())
+                        // }
+                        this.serializedData = val
+                        
+                        const items = GridStackUI.Utils.sort(this.serializedData);
+                        items.forEach(function (node) {
+                            const gridnode = this.grid.addWidget($(`<div data-gs-id="${node.id}"><div class="grid-stack-item-content"><a href="${node.id}"></a></div></div>`),
+                                node.x, node.y, node.width, node.height);
 
-                    const items = GridStackUI.Utils.sort(this.serializedData);
-                    items.forEach(function (node) {
-                        const gridnode = this.grid.addWidget($(`<div data-gs-id="${node.id}"><div class="grid-stack-item-content"><a href="${node.id}"></a></div></div>`),
-                            node.x, node.y, node.width, node.height);
+                            this.grid.resizable(gridnode, false)
+                        }, this);
 
-                        this.grid.resizable(gridnode, false)
-                    }, this);
-                
+                        requestAnimationFrame(() => $WowheadPower.refreshLinks())
+                    })
+                    
                     return false;
                 }.bind(this);
                 this.saveGrid = function () {
